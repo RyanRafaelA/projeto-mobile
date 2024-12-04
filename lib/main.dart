@@ -19,6 +19,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool entrar = true;
 
+  final _formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +41,7 @@ class _LoginState extends State<Login> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
           child: Form(
+            key: _formkey,
             child: Column(
               children: [
                 Icon(
@@ -56,6 +59,15 @@ class _LoginState extends State<Login> {
                   child: Column(
                     children: [
                       TextFormField(
+                        validator: (String? value) {
+                          if (value == null) {
+                            return "O campo Nome precisa ser preenchido";
+                          } else if (value.length < 3) {
+                            return "O campo Nome precisa ter o mínimo de 3 caracteres";
+                          }
+
+                          return null;
+                        },
                         decoration: InputDecoration(
                           hintText: "Nome",
                           fillColor: Colors.white,
@@ -82,6 +94,19 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 TextFormField(
+                  validator: (String? value) {
+                    if (value == null) {
+                      return "O campo E-mail precisa ser preenchido";
+                    } else if (value.length < 5) {
+                      return "O campo E-mail precisa ter o mínimo de 5 caracteres";
+                    } else if (!value.contains("@")) {
+                      return "O campo E-mail precisa ter o arroba ( @ )";
+                    } else if (!value.contains(".")) {
+                      return "O campo E-mail precisa ter o ponto ( . )";
+                    }
+
+                    return null;
+                  },
                   decoration: InputDecoration(
                     hintText: "E-mail",
                     fillColor: Colors.white,
@@ -105,6 +130,15 @@ class _LoginState extends State<Login> {
                   height: 5,
                 ),
                 TextFormField(
+                  validator: (String? value) {
+                    if (value == null) {
+                      return "O campo Senha precisa ser preenchido";
+                    } else if (value.length < 8) {
+                      return "O campo Senha precisa ter o mínimo de 8 caracteres";
+                    }
+
+                    return null;
+                  },
                   decoration: InputDecoration(
                     hintText: "Senha",
                     fillColor: Colors.white,
@@ -133,6 +167,15 @@ class _LoginState extends State<Login> {
                         height: 5,
                       ),
                       TextFormField(
+                        validator: (String? value) {
+                          if (value == null) {
+                            return "O campo Confirme a Senha precisa ser preenchido";
+                          } else if (value.length < 8) {
+                            return "O campo Confirme a Senha precisa ter o mínimo de 8 caracteres";
+                          }
+
+                          return null;
+                        },
                         decoration: InputDecoration(
                           hintText: "Confirme a senha",
                           fillColor: Colors.white,
@@ -164,7 +207,9 @@ class _LoginState extends State<Login> {
                   child: SizedBox(
                     height: 40,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        botaoEntrar();
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
                             (entrar) ? Colors.red : Colors.deepOrangeAccent,
@@ -202,5 +247,13 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  botaoEntrar() {
+    if (_formkey.currentState!.validate()) {
+      print("formulario funcionando");
+    } else {
+      print("formulario não funcionando");
+    }
   }
 }
