@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_login_cadastro/auth.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -11,6 +12,12 @@ class _LoginState extends State<Login> {
   bool entrar = true;
 
   final _formkey = GlobalKey<FormState>();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+  final TextEditingController _nomeController = TextEditingController();
+
+  final AuthService _authServ = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +57,7 @@ class _LoginState extends State<Login> {
                   child: Column(
                     children: [
                       TextFormField(
+                        controller: _nomeController,
                         validator: (String? value) {
                           if (value == null) {
                             return "O campo Nome precisa ser preenchido";
@@ -85,6 +93,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 TextFormField(
+                  controller: _emailController,
                   validator: (String? value) {
                     if (value == null) {
                       return "O campo E-mail precisa ser preenchido";
@@ -121,6 +130,7 @@ class _LoginState extends State<Login> {
                   height: 5,
                 ),
                 TextFormField(
+                  controller: _senhaController,
                   validator: (String? value) {
                     if (value == null) {
                       return "O campo Senha precisa ser preenchido";
@@ -149,49 +159,6 @@ class _LoginState extends State<Login> {
                     fontSize: 16,
                   ),
                   obscureText: true,
-                ),
-                Visibility(
-                  visible: !entrar,
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      TextFormField(
-                        validator: (String? value) {
-                          if (value == null) {
-                            return "O campo Confirme a Senha precisa ser preenchido";
-                          } else if (value.length < 8) {
-                            return "O campo Confirme a Senha precisa ter o mínimo de 8 caracteres";
-                          }
-
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          hintText: "Confirme a senha",
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintStyle: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w200,
-                            fontSize: 16,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w200,
-                          fontSize: 16,
-                        ),
-                        obscureText: true,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                    ],
-                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15, bottom: 15),
@@ -241,8 +208,20 @@ class _LoginState extends State<Login> {
   }
 
   botaoEntrar() {
+    String nome = _nomeController.text;
+    String email = _emailController.text;
+    String senha = _senhaController.text;
+
     if (_formkey.currentState!.validate()) {
-      print("formulario funcionando");
+      if (entrar) {
+        print("Entrada validada.");
+      } else {
+        print("Cadastro validado");
+        print("${_nomeController.text}");
+        print("${_emailController.text}");
+        print("${_senhaController.text}");
+        _authServ.cadUser(email: email, senha: senha, nome: nome);
+      }
     } else {
       print("formulario não funcionando");
     }
